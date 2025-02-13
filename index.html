@@ -87,13 +87,13 @@
             let c4 = -(a + b + c + d + e);
             let c5 = 1;
 
-            outstr = `yellow(x) := x^5 + ${c4}x^4 + ${c3}x^3 + ${c2}x^2 + ${c1}x ${c0}`;
+            outstr = `yellow(x) := x^5 + ${c4}x^4 + ${c3}x^3 + ${c2}x^2 + ${c1}x ${c0}<br>`;
 
             let randint = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
             [a, b, c, d, e].forEach((p, idx) => {
                 let ran_27 = randint(1, 10) + 27;
-                outstr += `<br> green_${idx + 1}(x) := x^2 -${ran_27 + p}x + ${ran_27 * p}; ([random: ${ran_27}])`;
+                outstr += `<br> green_${idx + 1}(x) := x^2 -${ran_27 + p}x + ${ran_27 * p}; <span class="gray">([random: ${ran_27}])</span>`;
             });
 
             return outstr;
@@ -210,6 +210,11 @@
 </body>
 
 <style>
+
+    body {
+        font-size: normal;
+    }
+
     .flex_mid {
         display: flex;
         justify-content: center;
@@ -227,9 +232,9 @@
     .char-input {
         margin: 5px;
         text-align: center;
-        width: 40px;
-        height: 40px;
-        font-size: 30px;
+        width: 4vw;
+        height: 4vw;
+        font-size: 3vw;
     }
 
     #output_field {
@@ -274,6 +279,10 @@
     .yellow {
         color: rgb(255, 223, 15);
         font-weight: bold;
+    }
+
+    .gray {
+        color: rgba(128, 128, 128, 0.815);
     }
 
 
