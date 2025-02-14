@@ -5,195 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Character Input</title>
-    <script>
-        // automatically focus first input
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById("first_input").focus();
-        });
-
-
-        function handleBackspace(event) {
-            const currentInput = event.target;
-            
-            if (event.key === 'Backspace' && currentInput.value === '') {
-                let prevInput = currentInput.previousElementSibling;
-                if (prevInput && prevInput.classList.contains('char-input')) {
-                    prevInput.focus();
-                    clear_output();
-                }
-            }
-        }
-
-        // Add event listener for each input to handle backspace
-        document.addEventListener('DOMContentLoaded', function() {
-            const inputs = document.querySelectorAll('.char-input');
-            inputs.forEach(input => {
-                input.addEventListener('keydown', handleBackspace);
-            });
-        });
-
-
-        // Function to automatically focus on the next input
-        function autoTab(event) {
-            const currentInput = event.target;
-            currentInput.value = currentInput.value.toUpperCase();
-            if (currentInput.value.length === 1) { // Check if 1 character is entered
-                let nextInput = currentInput.nextElementSibling;
-                if (nextInput && nextInput.classList.contains('char-input')) {
-                    nextInput.focus();
-                }
-            }
-        }
-
-        
-        // Function to detect when the last item was entered
-        function input_done(event) {
-            const currentInput = event.target;
-            currentInput.value = currentInput.value.toUpperCase();
-            if (currentInput.value.length === 1) {
-                const inputFields = document.querySelectorAll('.char-input');
-                let characters = '';
-
-                inputFields.forEach(field => {
-                    characters += field.value;
-                });
-
-                document.getElementById("output_field").innerHTML = encodeWordle(characters);
-            }
-        }
-
-        function clear_output() {
-            document.getElementById("output_field").innerHTML = "";
-        }
-        
-
-
-        ////////////////////////////////////////////////////////////////////
-
-        function encodeWordle(word) {
-            if (word.length !== 5) {
-                console.log("Sorry, only words of length 5 are allowed! \nError...");
-                throw new Error("Sorry, only words of length 5 are allowed!");
-            }
-
-            let w = word.toUpperCase();
-
-            let a = w.charCodeAt(0) - 64;
-            let b = w.charCodeAt(1) - 64;
-            let c = w.charCodeAt(2) - 64;
-            let d = w.charCodeAt(3) - 64;
-            let e = w.charCodeAt(4) - 64;
-
-            // coefficients
-            let c0 = -(a * b * c * d * e);
-            let c1 = (a * b * c * d + a * b * c * e + a * b * d * e + a * c * d * e + b * c * d * e);
-            let c2 = -(a * b * c + a * b * d + a * b * e + a * c * d + a * c * e + a * d * e + b * c * d + b * c * e + b * d * e + c * d * e);
-            let c3 = (a * b + a * c + a * d + a * e + b * c + b * d + b * e + c * d + c * e + d * e);
-            let c4 = -(a + b + c + d + e);
-            let c5 = 1;
-
-            let randint = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-            
-            let ran_27 = randint(1, 15) + 27;
-
-            outstr = `<span class="yellow">yellow</span>(x) := (x^2 -${c + e}x + ${c * e}) * (x^2 -${d + a}x + ${d * a}) * (x^2 -${b + ran_27}x + ${b * ran_27})<br>`;
-
-            [a, b, c, d, e].forEach((p, idx) => {
-                let ran_27 = randint(1, 15) + 27;
-                outstr += `<br> <span class="green">green_${idx + 1}</span>(x) := x^2 -${ran_27 + p}x + ${ran_27 * p}; <span class="gray">([random: ${ran_27}])</span>`;
-            });
-
-            return outstr;
-        }
-
-        let shows_popup = false;
-        function showInfo() {
-            if(shows_popup) {
-                closePopupAlert();
-                return;
-            }
-
-            info_text = `                    
-                <div style="margin-left:20%;margin-right:20%;">
-                    <h2> What is this?</h2>
-                    Ever wanted to play an analog wordle? <br>
-                    Enter a five letter word to get the encoding functions for that analog wordle game.
-
-                    <h3>Rules:</h3>
-                    <b style="font-family: Arial;">1.</b> Letters are encoded by their position in the alphabet: <b>'A' is 1 and 'Z' is 26</b>. <br><br>
-                    <b style="font-family: Arial;">2.</b> Functions <code>green_n(x)</code> give you the encoding for the letter
-                    at position <code>n</code>: position <code>n</code> is <span class="green">green</span> if and only if
-                    <code>green_n</code> for the entered letter is <span class="green"> 0 </span>. <br><br>
-                    <b style="font-family: Arial;">3.</b> Function <code>yellow(x)</code> gives you the encoding for all <span class="yellow">yellow</span>
-                    letters: <code>yellow(x)</code> is <span class="yellow">0</span> whenever the letter is present somewhere in the word. NOTE: A letter that
-                    is green at a certain position is yellow at all positions. <br><br>
-                    
-                </div>
-                `;
-            newPopupAlert(info_text);
-        }
-        
-
-        ////////////////////////////////////////////////////////////////////////////////////////
-
-        function closePopupAlert() {
-            document.getElementById('popupspace').innerHTML = '';
-            shows_popup = false;
-        }
-
-        function newPopupAlert(text) {
-            shows_popup = true;
-            document.getElementById("popupspace").innerHTML = `
-            <div class="blurbackground" style="
-                background-color: rgba(101, 194, 248, 0.527);
-                display: flex;
-                justify-content: center;
-                flex-wrap: nowrap;
-                flex-direction: row;
-                position: fixed;
-                left: 0;
-                top: 0;
-                z-index: 6;
-                height: 100%;
-                width: 100%;
-                ">
-                <div id="popupflexclm" style="
-                    display: flex;
-                    justify-content: center;
-                    flex-direction: column;
-                    flex-wrap: nowrap;
-                    height: 100%;
-                    /*width: 50%;*/
-                    " 
-                >
-                    <div id='popup' 
-                        style="width: 100%;
-                        height: fit-content;
-                        border: 2px solid lightgray;
-                        text-align: center;
-                        background-color: white;
-                        color: black;
-                        padding-bottom: 10px;
-                        border-radius: 6px;"
-                    >
-                        ${text}
-                        <br>
-                        
-                        <button onclick="closePopupAlert()" id="closebtn" 
-                        style="
-                        background-color: #1a73e8;
-                        color: white;
-                        border: none;
-                        border-radius: 3px;
-                        padding: 5px;"
-                        >
-                        CLOSE
-                        </button>                          
-                    </div>
-                </div>
-            </div>`;
-        }
-    </script>
+    
 </head>
 
 <body class="flex_mid">
@@ -322,5 +134,195 @@
         margin-right: 30%;
     }
 </style>
+
+<script>
+    // automatically focus first input
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById("first_input").focus();
+    });
+
+
+    function handleBackspace(event) {
+        const currentInput = event.target;
+        
+        if (event.key === 'Backspace' && currentInput.value === '') {
+            let prevInput = currentInput.previousElementSibling;
+            if (prevInput && prevInput.classList.contains('char-input')) {
+                prevInput.focus();
+                clear_output();
+            }
+        }
+    }
+
+    // Add event listener for each input to handle backspace
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputs = document.querySelectorAll('.char-input');
+        inputs.forEach(input => {
+            input.addEventListener('keydown', handleBackspace);
+        });
+    });
+
+
+    // Function to automatically focus on the next input
+    function autoTab(event) {
+        const currentInput = event.target;
+        currentInput.value = currentInput.value.toUpperCase();
+        if (currentInput.value.length === 1) { // Check if 1 character is entered
+            let nextInput = currentInput.nextElementSibling;
+            if (nextInput && nextInput.classList.contains('char-input')) {
+                nextInput.focus();
+            }
+        }
+    }
+
+    
+    // Function to detect when the last item was entered
+    function input_done(event) {
+        const currentInput = event.target;
+        currentInput.value = currentInput.value.toUpperCase();
+        if (currentInput.value.length === 1) {
+            const inputFields = document.querySelectorAll('.char-input');
+            let characters = '';
+
+            inputFields.forEach(field => {
+                characters += field.value;
+            });
+
+            document.getElementById("output_field").innerHTML = encodeWordle(characters);
+        }
+    }
+
+    function clear_output() {
+        document.getElementById("output_field").innerHTML = "";
+    }
+    
+
+
+    ////////////////////////////////////////////////////////////////////
+
+    function encodeWordle(word) {
+        if (word.length !== 5) {
+            console.log("Sorry, only words of length 5 are allowed! \nError...");
+            throw new Error("Sorry, only words of length 5 are allowed!");
+        }
+
+        let w = word.toUpperCase();
+
+        let a = w.charCodeAt(0) - 64;
+        let b = w.charCodeAt(1) - 64;
+        let c = w.charCodeAt(2) - 64;
+        let d = w.charCodeAt(3) - 64;
+        let e = w.charCodeAt(4) - 64;
+
+        // coefficients
+        let c0 = -(a * b * c * d * e);
+        let c1 = (a * b * c * d + a * b * c * e + a * b * d * e + a * c * d * e + b * c * d * e);
+        let c2 = -(a * b * c + a * b * d + a * b * e + a * c * d + a * c * e + a * d * e + b * c * d + b * c * e + b * d * e + c * d * e);
+        let c3 = (a * b + a * c + a * d + a * e + b * c + b * d + b * e + c * d + c * e + d * e);
+        let c4 = -(a + b + c + d + e);
+        let c5 = 1;
+
+        let randint = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+        
+        let ran_27 = randint(1, 15) + 27;
+
+        outstr = `<span class="yellow">yellow</span>(x) := (x^2 -${c + e}x + ${c * e}) * (x^2 -${d + a}x + ${d * a}) * (x^2 -${b + ran_27}x + ${b * ran_27})<br>`;
+
+        [a, b, c, d, e].forEach((p, idx) => {
+            let ran_27 = randint(1, 15) + 27;
+            outstr += `<br> <span class="green">green_${idx + 1}</span>(x) := x^2 -${ran_27 + p}x + ${ran_27 * p}; <span class="gray">([random: ${ran_27}])</span>`;
+        });
+
+        return outstr;
+    }
+
+    let shows_popup = false;
+    function showInfo() {
+        if(shows_popup) {
+            closePopupAlert();
+            return;
+        }
+
+        info_text = `                    
+            <div style="margin-left:20%;margin-right:20%;">
+                <h2> What is this?</h2>
+                Ever wanted to play an analog wordle? <br>
+                Enter a five letter word to get the encoding functions for that analog wordle game.
+
+                <h3>Rules:</h3>
+                <b style="font-family: Arial;">1.</b> Letters are encoded by their position in the alphabet: <b>'A' is 1 and 'Z' is 26</b>. <br><br>
+                <b style="font-family: Arial;">2.</b> Functions <code>green_n(x)</code> give you the encoding for the letter
+                at position <code>n</code>: position <code>n</code> is <span class="green">green</span> if and only if
+                <code>green_n</code> for the entered letter is <span class="green"> 0 </span>. <br><br>
+                <b style="font-family: Arial;">3.</b> Function <code>yellow(x)</code> gives you the encoding for all <span class="yellow">yellow</span>
+                letters: <code>yellow(x)</code> is <span class="yellow">0</span> whenever the letter is present somewhere in the word. NOTE: A letter that
+                is green at a certain position is yellow at all positions. <br><br>
+                
+            </div>
+            `;
+        newPopupAlert(info_text);
+    }
+    
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+
+    function closePopupAlert() {
+        document.getElementById('popupspace').innerHTML = '';
+        shows_popup = false;
+    }
+
+    function newPopupAlert(text) {
+        shows_popup = true;
+        document.getElementById("popupspace").innerHTML = `
+        <div class="blurbackground" style="
+            background-color: rgba(101, 194, 248, 0.527);
+            display: flex;
+            justify-content: center;
+            flex-wrap: nowrap;
+            flex-direction: row;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 6;
+            height: 100%;
+            width: 100%;
+            ">
+            <div id="popupflexclm" style="
+                display: flex;
+                justify-content: center;
+                flex-direction: column;
+                flex-wrap: nowrap;
+                height: 100%;
+                /*width: 50%;*/
+                " 
+            >
+                <div id='popup' 
+                    style="width: 100%;
+                    height: fit-content;
+                    border: 2px solid lightgray;
+                    text-align: center;
+                    background-color: white;
+                    color: black;
+                    padding-bottom: 10px;
+                    border-radius: 6px;"
+                >
+                    ${text}
+                    <br>
+                    
+                    <button onclick="closePopupAlert()" id="closebtn" 
+                    style="
+                    background-color: #1a73e8;
+                    color: white;
+                    border: none;
+                    border-radius: 3px;
+                    padding: 5px;"
+                    >
+                    CLOSE
+                    </button>                          
+                </div>
+            </div>
+        </div>`;
+    }
+</script>
 
 </html>
