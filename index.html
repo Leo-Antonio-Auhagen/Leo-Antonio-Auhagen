@@ -22,6 +22,11 @@
             <input type="text" class="char-input" maxlength="1" placeholder="3" oninput="autoTab(event)" />
             <input type="text" class="char-input" maxlength="1" placeholder="4" oninput="autoTab(event)" />
             <input type="text" class="char-input" maxlength="1" placeholder="5" oninput="input_done(event)" />
+            <br>
+            <button onclick="giveRandom()" class="std_btn">
+                        RANDOM WORD
+            </button> 
+
         </div>
 
         <div id="output_field">
@@ -33,6 +38,15 @@
 </body>
 
 <style>
+
+    .std_btn {
+        background-color: #1a73e8;
+        color: white;
+        border: none;
+        border-radius: 3px;
+        padding: 5px;
+        margin-top: 10px;
+    }
 
     body {
         font-size: normal;
@@ -196,7 +210,23 @@
         document.getElementById("output_field").innerHTML = "";
     }
     
+    ////////////////////////////////////////////////////////////////////
 
+    function randint(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    const ran_words = ["apple", "brave", "charm", "daisy", "eagle", "frost", "glove", "harsh", "ivory", "joker", "knock", "lemon", "mango", "noble", "ocean", "pride", "queen", "rival", "solar", "tiger", "urban", "vivid", "wrist", "xenon", "yacht", "zebra", "amber", "beach", "cloud", "dance", "earth", "flame", "grape", "haste", "ideal", "jolly", "karma", "lunar", "mirth", "novel", "orbit", "plume", "quiet", "rebel", "sauce", "trust", "union", "valve", "wound", "xerox", "yield", "zesty", "angel", "blaze", "crisp", "drown", "ember", "fable", "glide", "honor", "image", "jumbo", "kneel", "latch", "merit", "nudge", "olive", "plush", "quilt", "rider", "scout", "tulip", "unite", "vowel", "waltz", "xylol", "youth", "zonal", "aloft", "brisk", "chose", "drain", "evoke", "frown", "giddy", "haven", "inlet", "jumpy", "knelt", "lucid", "moist", "nerve", "opine", "pouch", "quirk", "roast", "spine", "throb", "upset", "vexed"];
+
+    function giveRandom() {
+        const inputFields = document.querySelectorAll('.char-input');
+        inputFields.forEach(field => {
+                field.value = "*";
+        });
+
+        ran_idx = randint(0, ran_words.length);
+        document.getElementById("output_field").innerHTML = encodeWordle(ran_words[ran_idx]);
+    }
 
     ////////////////////////////////////////////////////////////////////
 
@@ -221,8 +251,6 @@
         let c3 = (a * b + a * c + a * d + a * e + b * c + b * d + b * e + c * d + c * e + d * e);
         let c4 = -(a + b + c + d + e);
         let c5 = 1;
-
-        let randint = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
         
         let ran_27 = randint(1, 15) + 27;
 
