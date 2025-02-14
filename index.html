@@ -92,12 +92,14 @@
             let c4 = -(a + b + c + d + e);
             let c5 = 1;
 
-            outstr = `<span class="yellow">yellow</span>(x) := x^5 + ${c4}x^4 + ${c3}x^3 + ${c2}x^2 + ${c1}x ${c0}<br>`;
-
             let randint = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+            
+            let ran_27 = randint(1, 15) + 27;
+
+            outstr = `<span class="yellow">yellow</span>(x) := (x^2 -${c + e}x + ${c * e}) * (x^2 -${d + a}x + ${d * a}) * (x^2 -${b + ran_27}x + ${b * ran_27})<br>`;
 
             [a, b, c, d, e].forEach((p, idx) => {
-                let ran_27 = randint(1, 10) + 27;
+                let ran_27 = randint(1, 15) + 27;
                 outstr += `<br> <span class="green">green_${idx + 1}</span>(x) := x^2 -${ran_27 + p}x + ${ran_27 * p}; <span class="gray">([random: ${ran_27}])</span>`;
             });
 
