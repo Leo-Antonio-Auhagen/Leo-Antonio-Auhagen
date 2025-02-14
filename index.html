@@ -19,6 +19,7 @@
                 let prevInput = currentInput.previousElementSibling;
                 if (prevInput && prevInput.classList.contains('char-input')) {
                     prevInput.focus();
+                    clear_output();
                 }
             }
         }
@@ -60,6 +61,10 @@
                 document.getElementById("output_field").innerHTML = encodeWordle(characters);
             }
         }
+
+        function clear_output() {
+            document.getElementById("output_field").innerHTML = "";
+        }
         
 
 
@@ -87,13 +92,13 @@
             let c4 = -(a + b + c + d + e);
             let c5 = 1;
 
-            outstr = `yellow(x) := x^5 + ${c4}x^4 + ${c3}x^3 + ${c2}x^2 + ${c1}x ${c0}<br>`;
+            outstr = `<span class="yellow">yellow</span>(x) := x^5 + ${c4}x^4 + ${c3}x^3 + ${c2}x^2 + ${c1}x ${c0}<br>`;
 
             let randint = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
             [a, b, c, d, e].forEach((p, idx) => {
                 let ran_27 = randint(1, 10) + 27;
-                outstr += `<br> green_${idx + 1}(x) := x^2 -${ran_27 + p}x + ${ran_27 * p}; <span class="gray">([random: ${ran_27}])</span>`;
+                outstr += `<br> <span class="green">green_${idx + 1}</span>(x) := x^2 -${ran_27 + p}x + ${ran_27 * p}; <span class="gray">([random: ${ran_27}])</span>`;
             });
 
             return outstr;
@@ -106,18 +111,21 @@
                 return;
             }
 
-            info_text = `<h2> What is this?</h2>
-                Enter a five letter word to get the encoding functions for a wordle game.
-
-                <h3>Rules:</h3>
-                    
+            info_text = `                    
                 <div style="margin-left:20%;margin-right:20%;">
-                <b style="font-family: Arial;">1.</b> Functions <code>green_n(x)</code> give you the encoding for the letter
-                at position <code>n</code>: position <code>n</code> is <span class="green">green</span> if and only if
-                <code>green_n</code> for the entered letter is <span class="green"> 0 </span>. <br>
-                <b style="font-family: Arial;">2.</b> Function <code>yellow(x)</code> gives you the encoding for all <span class="yellow">yellow</span>
-                letters: <code>yellow(x)</code> is <span class="yellow">0</span> whenever the letter is present somewhere in the word. NOTE: A letter that
-                is green at a certain position is yellow at all positions.
+                    <h2> What is this?</h2>
+                    Ever wanted to play an analog wordle? <br>
+                    Enter a five letter word to get the encoding functions for that analog wordle game.
+
+                    <h3>Rules:</h3>
+                    <b style="font-family: Arial;">1.</b> Letters are encoded by their position in the alphabet: <b>'A' is 1 and 'Z' is 26</b>. <br><br>
+                    <b style="font-family: Arial;">2.</b> Functions <code>green_n(x)</code> give you the encoding for the letter
+                    at position <code>n</code>: position <code>n</code> is <span class="green">green</span> if and only if
+                    <code>green_n</code> for the entered letter is <span class="green"> 0 </span>. <br><br>
+                    <b style="font-family: Arial;">3.</b> Function <code>yellow(x)</code> gives you the encoding for all <span class="yellow">yellow</span>
+                    letters: <code>yellow(x)</code> is <span class="yellow">0</span> whenever the letter is present somewhere in the word. NOTE: A letter that
+                    is green at a certain position is yellow at all positions. <br><br>
+                    
                 </div>
                 `;
             newPopupAlert(info_text);
@@ -153,7 +161,8 @@
                     flex-direction: column;
                     flex-wrap: nowrap;
                     height: 100%;
-                    width: 50%;"
+                    /*width: 50%;*/
+                    " 
                 >
                     <div id='popup' 
                         style="width: 100%;
@@ -223,18 +232,38 @@
         font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     }
 
-    #page {
-        margin-top: 10%;
-        width: 60%;
-        text-align: center;
+    /*wide screens*/
+    @media screen and (min-width: 800px) {
+        #page {
+            margin-top: 10%;
+            width: 60%;
+            text-align: center;
+        }
+        #popupflexclm{
+            width: 50%;
+        }
     }
+
+    /*phone like screens*/
+    @media screen and (max-width: 799px) {
+        #page {
+            margin-top: 20%;
+            width: 90%;
+            text-align: center;
+        }
+        #popupflexclm {
+            width: 90%;
+        }
+    }
+
+    
 
     .char-input {
         margin: 5px;
         text-align: center;
-        width: 4vw;
-        height: 4vw;
-        font-size: 3vw;
+        width: 4vh;
+        height: 4vh;
+        font-size: 3vh;
     }
 
     #output_field {
@@ -277,7 +306,7 @@
     }
 
     .yellow {
-        color: rgb(255, 223, 15);
+        color: rgb(234, 205, 14);
         font-weight: bold;
     }
 
